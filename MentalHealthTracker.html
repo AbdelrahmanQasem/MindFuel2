@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MindFuel - Self Assessment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            background-image: url('bgimage.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #0e3557;
+        }
+
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            text-align: center;
+        }
+
+            nav a {
+                color: #3b7dd8;
+                text-decoration: none;
+                margin: 15px;
+                font-size: 22px;
+                font-family: 'Montserrat', sans-serif;
+            }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: rgba(0, 23, 46, 0.6);
+            margin: 15px;
+            border-radius: 20px;
+            color: whitesmoke;
+        }
+
+        .form-section {
+            background-color: rgba(255, 255, 255, 0.9);
+            margin: 30px auto;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 700px;
+        }
+
+        span.error {
+            color: red;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="tools.html">Self-Help Tools</a>
+        <a href="resources.html">Resources</a>
+        <a href="counseling.html">Counseling</a>
+        <a href="successes.html">Success Stories</a>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact</a>
+        <a href="MentalHealthTracker.html">Self Assessment</a>
+    </nav>
+
+    <header>
+        <h1>Self-Assessment Form</h1>
+        <p id="datetime"></p>
+    </header>
+
+    <div class="form-section">
+        <form id="assessmentForm" onsubmit="return validateForm();">
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input type="text" id="name" class="form-control">
+                <span class="error" id="nameError"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Age</label>
+                <input type="number" id="age" class="form-control">
+                <span class="error" id="ageError"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">How often do you feel stressed?</label><br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="stress" value="3" id="often">
+                    <label class="form-check-label" for="often">Often</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="stress" value="2" id="sometimes">
+                    <label class="form-check-label" for="sometimes">Sometimes</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="stress" value="1" id="rarely">
+                    <label class="form-check-label" for="rarely">Rarely</label>
+                </div>
+                <br>
+                <span class="error" id="stressError"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">What methods do you use for self-care?</label><br>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="1" id="exercise">
+                    <label class="form-check-label" for="exercise">Exercise</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="1" id="meditation">
+                    <label class="form-check-label" for="meditation">Meditation</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="1" id="social">
+                    <label class="form-check-label" for="social">Talking to Friends</label>
+                </div>
+                <span class="error" id="careError"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Your thoughts about mental wellness:</label>
+                <textarea class="form-control" id="comments" rows="3"></textarea>
+                <span class="error" id="commentsError"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Generated Report</label>
+                <textarea class="form-control" id="report" rows="5" readonly></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('datetime').innerText = new Date().toLocaleString();
+
+        function validateForm() {
+            let isValid = true;
+
+            // Clear previous errors
+            document.querySelectorAll("span.error").forEach(el => el.innerText = "");
+
+            const name = document.getElementById("name").value.trim();
+            const age = parseInt(document.getElementById("age").value.trim());
+            const stressLevel = document.querySelector('input[name="stress"]:checked');
+            const checkboxes = [document.getElementById("exercise"), document.getElementById("meditation"), document.getElementById("social")];
+            const comments = document.getElementById("comments").value.trim();
+
+            // Name
+            if (name === "") {
+                document.getElementById("nameError").innerText = "Name is required.";
+                isValid = false;
+            }
+
+            // Age
+            if (isNaN(age) || age < 10 || age > 100) {
+                document.getElementById("ageError").innerText = "Enter a valid age (10–100).";
+                isValid = false;
+            }
+
+            // Stress level
+            if (!stressLevel) {
+                document.getElementById("stressError").innerText = "Please select stress frequency.";
+                isValid = false;
+            }
+
+            // At least one checkbox
+            const selectedChecks = checkboxes.filter(cb => cb.checked);
+            if (selectedChecks.length === 0) {
+                document.getElementById("careError").innerText = "Select at least one self-care method.";
+                isValid = false;
+            }
+
+            // Comments
+            if (comments === "") {
+                document.getElementById("commentsError").innerText = "Please share your thoughts.";
+                isValid = false;
+            }
+
+            // Generate Report
+            if (isValid) {
+                let score = parseInt(stressLevel.value) + selectedChecks.length;
+                let report = `Name: ${name}\nAge: ${age}\nStress Score: ${score}\nSelf-Care Methods: ${selectedChecks.map(c => c.nextSibling.textContent.trim()).join(", ")}\nComments: ${comments}`;
+                document.getElementById("report").value = report;
+            }
+
+            return isValid;
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
